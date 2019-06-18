@@ -187,12 +187,12 @@
       });
       function selectTheme() {
         var themeInput = document.getElementById("selectTheme");
-        var theme = themeInput.options[themeInput.selectedIndex].innerHTML;
+        var theme = themeInput.option[themeInput.selectedIndex].innerHTML;
         editor.setOption("theme", theme);
       }
       function selectFontsize() {
         var fontSizeInput = document.getElementById("selectFontSize");
-        var fontSize = fontSizeInput.options[fontSizeInput.selectedIndex].innerHTML;
+        var fontSize = fontSizeInput.option[fontSizeInput.selectedIndex].innerHTML;
         editor.getWrapperElement().style.fontSize = fontSize;
         editor.refresh();
       }

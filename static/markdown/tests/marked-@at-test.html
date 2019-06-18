@@ -151,7 +151,7 @@ This @pandao an H2 @pandao
                 markedRenderer.link = function (href,title,text){
                     console.log("link =>", href,title,text);
                     
-                    if(this.options.sanitize) {
+                    if(this.option.sanitize) {
                         try{
                             var prot=decodeURIComponent(unescape(href)).replace(/[^\w:]/g,"").toLowerCase()
                         }catch(e){
@@ -185,7 +185,7 @@ This @pandao an H2 @pandao
                 };
                 
                 markedRenderer.heading = function (text,level,raw){
-                    return"<h"+level+' id="'+this.options.headerPrefix+raw.toLowerCase().replace(/[^\w]+/g,"-")+'">'+this.at(text)+"</h"+level+">\n"
+                    return"<h"+level+' id="'+this.option.headerPrefix+raw.toLowerCase().replace(/[^\w]+/g,"-")+'">'+this.at(text)+"</h"+level+">\n"
                 };
                 
                 markedRenderer.listitem = function (text){

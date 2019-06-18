@@ -2,6 +2,7 @@ package main
 
 import (
 	"blog/controllers"
+	_ "blog/controllers/ipfilter"
 	_ "blog/init"
 	_ "blog/routers"
 	"github.com/astaxie/beego"
@@ -11,10 +12,10 @@ import (
 )
 
 func initLogger() {
-	var consoleconfig=`{"level":7}`
-	logs.SetLogger(logs.AdapterConsole,consoleconfig)
+	var consoleconfig = `{"level":7}`
+	logs.SetLogger(logs.AdapterConsole, consoleconfig)
 	var fileconfig = `{"filename":"log/log.log","level":7}`
-	logs.SetLogger(logs.AdapterFile,fileconfig)
+	logs.SetLogger(logs.AdapterFile, fileconfig)
 	//var mailconfig = `{"username":"beegotest@gmail.com",
 	//					"password":"xxxxxxxx",
 	//					"host":"smtp.gmail.com:587",
@@ -47,5 +48,8 @@ func main() {
 	beego.ErrorController(&controllers.ErrorController{})
 	//过滤器
 	//beego.InsertFilter("/*", beego.BeforeRouter, filters.FilterUser)
+	beego.AddFuncMap("haspermission", hasPermission)
+	beego.AddFuncMap("haspermissionstr", hasPermissionstr)
+
 	beego.Run()
 }

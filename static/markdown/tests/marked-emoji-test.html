@@ -197,7 +197,7 @@ This  :fa-save::  :fa-truck:is an H2 :100:
                 }
                 
                 markedRenderer.heading = function (text,level,raw){
-                    return"<h"+level+' id="'+this.options.headerPrefix+raw.toLowerCase().replace(/[^\w]+/g,"-")+'">'+this.emoji(text)+"</h"+level+">\n"
+                    return"<h"+level+' id="'+this.option.headerPrefix+raw.toLowerCase().replace(/[^\w]+/g,"-")+'">'+this.emoji(text)+"</h"+level+">\n"
                 };
                 
                 markedRenderer.listitem = function (text){
