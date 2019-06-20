@@ -1,7 +1,5 @@
 package admin
 
-
-
 type SystemController struct {
 	baseController
 }

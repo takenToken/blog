@@ -50,6 +50,12 @@ func (u *User) Update(fields ...string) error {
 	return nil
 }
 
+//删除
+func (u *User) Delete(fields ...string) (int64, error) {
+	count, err := orm.NewOrm().Delete(u, fields ...)
+	return count, err
+}
+
 //fields代表哪些字段作为查询条件
 func (u *User) Read(fields ...string) error {
 	if err := orm.NewOrm().Read(u, fields...); err != nil {

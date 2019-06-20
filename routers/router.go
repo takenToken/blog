@@ -2,13 +2,23 @@ package routers
 
 import (
 	"blog/controllers/admin"
+	"blog/controllers/blog"
 	"github.com/astaxie/beego"
 )
-
+/**
+	路由有几种方式：
+		1.命名空间方式, beego.AddNamespace()
+		2.
+ */
 //初始化
 func init() {
 
+	//前端路由
+	beego.Router("/", &blog.MainController{}, "*:Index")
+	//beego.Router("/404.html", &blog.MainController{}, "*:Go404")
+	beego.Router("/index:page:int.html", &blog.MainController{}, "*:Index")
 
+	//后端
 	beego.Router("/admin", &admin.IndexController{}, "*:Index")
 	beego.Router("/admin/login", &admin.AccountController{}, "*:Login")
 	beego.Router("/admin/register", &admin.AccountController{}, "*:Register")
@@ -18,10 +28,10 @@ func init() {
 	beego.Router("/admin/system/setting", &admin.SystemController{}, "*:Setting")
 	//
 	////内容管理
-	//beego.Router("/admin/article/list", &admin.ArticleController{}, "*:List")
-	//beego.Router("/admin/article/add", &admin.ArticleController{}, "*:Add")
-	//beego.Router("/admin/article/edit", &admin.ArticleController{}, "*:Edit")
-	//beego.Router("/admin/article/save", &admin.ArticleController{}, "post:Save")
+	beego.Router("/admin/article/list", &admin.ArticleController{}, "*:List")
+	beego.Router("/admin/article/add", &admin.ArticleController{}, "*:Add")
+	beego.Router("/admin/article/edit", &admin.ArticleController{}, "*:Edit")
+	beego.Router("/admin/article/save", &admin.ArticleController{}, "post:Save")
 	//beego.Router("/admin/article/delete", &admin.ArticleController{}, "*:Delete")
 	//beego.Router("/admin/article/batch", &admin.ArticleController{}, "*:Batch")
 	//beego.Router("/admin/tag", &admin.TagController{}, "*:Index")
@@ -61,6 +71,6 @@ func init() {
 	//beego.Router("/admin/comments/delete", &admin.CommentsController{}, "*:Delete")
 	//
 	////独立fileupload
-	//beego.Router("/admin/upload", &admin.FileuploadController{}, "*:Upload")
-	//beego.Router("/admin/uploadfile", &admin.FileuploadController{}, "*:UploadFile")
+	beego.Router("/admin/upload", &admin.FileuploadController{}, "*:Upload")
+	beego.Router("/admin/uploadfile", &admin.FileuploadController{}, "*:UploadFile")
 }

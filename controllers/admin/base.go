@@ -159,6 +159,7 @@ func (this *baseController) getTime() time.Time {
 	return time.Now().UTC().Add(time.Duration(add))
 }
 
+//默认上传文件路径
 func (this *baseController) Isdefaultsrc(value string) bool {
 	var defaultdir = "/static/upload/default/"
 	if value != "" {
