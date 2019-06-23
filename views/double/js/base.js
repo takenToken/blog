@@ -161,7 +161,7 @@ $(document).ready(function(){
                     $('input[name=password]').val('');
                     $('input[name=password2]').val('');
                     $('input[name=email]').val('');
-                    alert("账号："+username1+"注册成功,请使用该账号登录!")
+                    alert("账号："+username1+"注册成功,请使用该账号登录!");
                     $('.relogin').click();
                 }
             },

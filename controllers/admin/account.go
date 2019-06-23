@@ -67,43 +67,81 @@ func (this *AccountController) Logout() {
 
 //注册
 func (this *AccountController) Register() {
+	input := make(map[string]string)
 	errmsg := make(map[string]string)
-
-	userName := strings.TrimSpace(this.GetString("username"))
-	password := strings.TrimSpace(this.GetString("password"))
-	password2 := strings.TrimSpace(this.GetString("password2"))
-	nickname := strings.TrimSpace(this.GetString("nickname"))
-	email := strings.TrimSpace(this.GetString("email"))
-
-	valid := validation.Validation{}
-	if v := valid.Required(userName, "username"); !v.Ok {
-		errmsg["username"] = "请输入用户名!"
-		this.display()
-		return
+	if this.Ctx.Request.Method == "POST" && this.GetString("dosubmit") == "yes" {
+		username1 := strings.TrimSpace(this.GetString("username1"))
+		password1 := strings.TrimSpace(this.GetString("password1"))
+		password2 := strings.TrimSpace(this.GetString("password2"))
+		email := strings.TrimSpace(this.GetString("email"))
+		nickname := strings.TrimSpace(this.GetString("nickname"))
+		input["username1"] = username1
+		input["password1"] = password1
+		input["password2"] = password2
+		input["email"] = email
+		input["nickname"] = nickname
+		valid := validation.Validation{}
+		if v := valid.Required(username1, "username"); !v.Ok {
+			errmsg["username"] = "请输入用户名"
+		} else if v := valid.MaxSize(username1, 15, "username"); !v.Ok {
+			errmsg["username"] = "用户名长度不能大于15个字符"
+		} else if !checkUsername(username1) {
+			errmsg["username"] = "输入的用户名不符合要求(仅允许字母开头,并以字母、数字、-、_组成)"
+		}
+		var user models.User
+		err := user.Query().Filter("username", username1).One(&user)
+		if err == nil {
+			errmsg["username"] = fmt.Sprintf("用户名:%s 已被注册", username1)
+		}
+		if v := valid.Required(nickname, "nickname"); !v.Ok {
+			errmsg["nickname"] = "请输入昵称"
+		} else if v := valid.MaxSize(nickname, 15, "nickname"); !v.Ok {
+			errmsg["nickname"] = "昵称长度不能大于15个字符"
+		}
+		err = user.Query().Filter("nickname", nickname).One(&user)
+		if err == nil {
+			errmsg["nickname"] = fmt.Sprintf("昵称:%s 已被使用", nickname)
+		}
+		if v := valid.Required(password1, "password"); !v.Ok {
+			errmsg["password"] = "请输入密码"
+		} else if !checkPassword(password1) {
+			errmsg["password1"] = "输入的密码不符合要求(仅允许字母、数字和部分符号组成)"
+		}
+		if v := valid.Required(password2, "password2"); !v.Ok {
+			errmsg["password2"] = "请再次输入密码"
+		} else if password1 != password2 {
+			errmsg["password2"] = "两次输入的密码不一致"
+		} else if !checkPassword(password2) {
+			errmsg["password2"] = "输入的密码不符合要求(仅允许字母、数字和部分符号组成)"
+		}
+		if v := valid.Required(email, "email"); !v.Ok {
+			errmsg["email"] = "请输入email地址"
+		} else if v := valid.Email(email, "email"); !v.Ok {
+			errmsg["email"] = "Email无效"
+		}
+		if len(errmsg) == 0 {
+			salt := this.RandStr(5)
+			var user models.User
+			user.Username = username1
+			user.Password = models.Md5([]byte(password1 + "=" + salt))
+			user.Salt = salt
+			user.Email = email
+			user.Active = int8(1)
+			user.Upcount = int64(3)
+			user.Lastip = this.getClientIp()
+			user.Avator = "/static/upload/default/user-default-60x60.png"
+			user.Nickname = nickname
+			if err := user.Insert(); err != nil {
+				this.showmsg(err.Error())
+			} else {
+				this.showmsg("注册成功，请使用该账号登录")
+			}
+			this.Redirect(this.Ctx.Request.Referer(), 302)
+		}
 	}
-
-	if password != password2 {
-		errmsg["password"] = "两次密码不一致!"
-		this.display()
-		return
-	}
-
-	salt := this.RandStr(5)
-	newPassword := models.Md5([]byte(password + "=" + salt))
-
-	user := &models.User{
-		Username:  userName,
-		Password:  newPassword,
-		Salt:      salt,
-		Nickname:  nickname,
-		Email:     email,
-		Lastlogin: this.getTime()}
-
-	if err := user.Insert(); err != nil {
-		this.showmsg(err.Error())
-	}
-
-	this.Redirect("/admin/user/list", 302)
+	this.Data["input"] = input
+	this.Data["errmsg"] = errmsg
+	this.TplName = "admin/account_register.html"
 }
 
 //配置文件
