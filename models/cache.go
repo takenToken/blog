@@ -16,7 +16,8 @@ func init() {
 	conn := beego.AppConfig.String("redisConfig")
 	key := beego.AppConfig.String("redisGlobKey")
 	dbNum := beego.AppConfig.String("redisDbNum")
-	redisConfig := fmt.Sprintf("{\"key\":\"%s\",\"conn\":\"%s\",\"dbNum\":\"%s\",\"password\":\"%s\"}", key, conn, dbNum, "")
+	password := beego.AppConfig.String("redisPassword")
+	redisConfig := fmt.Sprintf("{\"key\":\"%s\",\"conn\":\"%s\",\"dbNum\":\"%s\",\"password\":\"%s\"}", key, conn, dbNum, password)
 	bm, err := cache.NewCache("redis", redisConfig)
 	if err != nil {
 		logs.Error(err)

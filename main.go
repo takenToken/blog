@@ -44,6 +44,7 @@ func hasPermissionstr(permissionlist string, value int) (out bool) {
 }
 
 func main() {
+	initLogger()
 	//异常处理
 	beego.ErrorController(&blog.ErrorController{})
 	//过滤器
