@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	_"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func init() {
@@ -25,5 +25,8 @@ func init() {
 	orm.RegisterDataBase("default", "mysql", dataSource, maxIdle, maxConn)
 
 	//
-	orm.Debug = true
+	if isDebug, err := beego.AppConfig.Bool("orm.debug"); err == nil {
+		orm.Debug = isDebug
+	}
+
 }

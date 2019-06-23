@@ -117,8 +117,6 @@ func GetOptions() map[string]string {
 			//反序列化
 			json.Unmarshal(opByte, &opMap)
 		}
-
-		logs.Info(opMap)
 		return opMap
 	}
 
