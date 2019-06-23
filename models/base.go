@@ -162,7 +162,7 @@ func GetLastPostRankings() []*map[string]string {
 func GetLastComments() []*Comments {
 	comments := &Comments{}
 	var commentsList []*Comments
-	comments.Query().Limit(7).OrderBy("-submittime").All(&commentsList)
+	comments.Query().Limit(7).Filter("is_removed", 0).OrderBy("-submittime").RelatedSel("user").All(&commentsList)
 
 	return commentsList
 }

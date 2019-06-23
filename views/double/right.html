@@ -23,7 +23,7 @@
                 {{range $k,$v := .lastPostRankings}}
                 <li><i></i><a href="/article/{{$v.id}}" title="{{$v.text}}"
                               target="_blank">{{$v.text}}</a>
-                {{end}}
+                    {{end}}
             </ul>
         </div>
     </div>
@@ -33,14 +33,28 @@
             <div class="htitle">
                 <h4>最新评论</h4>
             </div>
-            <div class="notice">
+            <div class="newcomment">
                 <ul style="padding-inline-start: 0">
                     {{range $k,$v := .lastComments}}
-
+                        <li>
+                            <a class="pull-left">
+                                <img class="media-object" src="{{ $v.User.Avator }}" height="36" width="36" alt="">
+                            </a>
+                            <div class="media-body">
+                                <h6 class="media-heading">{{$v.User.Nickname}}{{ if eq $v.User.Id 1 }}
+                                        <button class="btn btn-info btn-xs">官方</button>{{end}}
+                                    <span>{{$v.ShowSubTime}}</span>
+                                </h6>
+                                {{if eq $v.Obj_pk_type 1}}
+                                    <a href="/links.html#comment-{{$v.Id}}"
+                                       title="{{$v.Titleln}}">{{$v.Return_limit $v.Comment}}</a>
+                                {{else}}
+                                    <a href="{{$v.Obj_pk.Link}}#comment-{{$v.Id}}"
+                                       title="{{$v.Titleln}}">{{$v.Return_limit $v.Comment}}</a>
+                                {{end}}
+                            </div>
+                        </li>
                     {{end}}
-                    <li>赞</li>
-                    <li>赞二</li>
-                    <li>赞三</li>
                 </ul>
             </div>
         </div>

@@ -15,7 +15,7 @@ func init() {
 
 	//前端路由
 	beego.Router("/", &blog.MainController{}, "*:Index")
-	//beego.Router("/404.html", &blog.MainController{}, "*:Go404")
+	beego.Router("/404.html", &blog.MainController{}, "*:Go404")
 	beego.Router("/index:page:int.html", &blog.MainController{}, "*:Index")
 
 	beego.Router("/article/:id:int", &blog.MainController{}, "*:Show")      //ID访问

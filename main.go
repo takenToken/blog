@@ -1,7 +1,7 @@
 package main
 
 import (
-	"blog/controllers"
+	"blog/controllers/blog"
 	_ "blog/controllers/ipfilter"
 	_ "blog/init"
 	_ "blog/routers"
@@ -45,7 +45,7 @@ func hasPermissionstr(permissionlist string, value int) (out bool) {
 
 func main() {
 	//异常处理
-	beego.ErrorController(&controllers.ErrorController{})
+	beego.ErrorController(&blog.ErrorController{})
 	//过滤器
 	//beego.InsertFilter("/*", beego.BeforeRouter, filters.FilterUser)
 	beego.AddFuncMap("haspermission", hasPermission)

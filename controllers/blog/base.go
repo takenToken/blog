@@ -28,6 +28,7 @@ func (this *baseController) Prepare() {
 		//超过3次异常访问，返回500
 		this.Controller.Abort("500")
 	}
+
 	this.Data["IsLogin"] = this.IsLogin()
 	this.options = models.GetOptions()
 	this.right = "right.html"
