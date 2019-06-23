@@ -19,6 +19,7 @@ type baseController struct {
 	allowconnmsg string
 }
 
+//预处理函数,每次访问都会调用
 func (this *baseController) Prepare() {
 	this.clientip = this.getClientIp()
 	this.allowconn = true
@@ -28,9 +29,16 @@ func (this *baseController) Prepare() {
 		this.Controller.Abort("500")
 	}
 	this.Data["IsLogin"] = this.IsLogin()
-	//this.options = models.GetOptions()
+	this.options = models.GetOptions()
 	this.right = "right.html"
 	this.Data["options"] = this.options
+	//最新文章
+	this.Data["lastPosts"] = models.GetLastPosts()
+	//最新排名
+	this.Data["lastPostRankings"] = models.GetLastPostRankings()
+	//最新评论
+	this.Data["lastComments"] = models.GetLastComments()
+
 	//this.Data["latestblog"] = models.GetLatestBlog()
 	//this.Data["hotblog"] = models.GetHotBlog()
 	//this.Data["newcomments"] = models.GetNewComments()
@@ -134,3 +142,4 @@ func (this *baseController) getClientIp() string {
 	}
 	return s
 }
+

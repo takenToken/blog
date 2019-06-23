@@ -15,7 +15,11 @@ type Link struct {
 }
 
 func init() {
-	orm.RegisterModelWithPrefix("tb_", &Link{})
+	orm.RegisterModel(&Link{})
+}
+
+func(m *Link) TableName() string{
+	return TableName("tb_link")
 }
 
 func (m *Link) Insert() error {

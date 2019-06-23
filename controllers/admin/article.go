@@ -18,10 +18,11 @@ type ArticleController struct {
 	baseController
 }
 
+//管理
 func (this *ArticleController) List() {
 	var (
 		page       int64
-		pageSize   int64 = 10
+		pagesize   int64 = 10
 		status     int64
 		offset     int64
 		list       []*models.Post
@@ -29,7 +30,6 @@ func (this *ArticleController) List() {
 		searchtype string
 		keyword    string
 	)
-
 	searchtype = this.GetString("searchtype")
 	keyword = this.GetString("keyword")
 	status, _ = this.GetInt64("status")
@@ -49,7 +49,7 @@ func (this *ArticleController) List() {
 	if page, _ = this.GetInt64("page"); page < 1 {
 		page = 1
 	}
-	offset = (page - 1) * pageSize
+	offset = (page - 1) * pagesize
 	query := post.Query().Filter("status", status).RelatedSel()
 
 	if keyword != "" {
@@ -64,7 +64,7 @@ func (this *ArticleController) List() {
 	}
 	count, _ := query.Count()
 	if count > 0 {
-		query.OrderBy("-istop", "-posttime").Limit(pageSize, offset).RelatedSel().All(&list)
+		query.OrderBy("-istop", "-posttime").Limit(pagesize, offset).RelatedSel().All(&list)
 	}
 
 	this.Data["searchtype"] = searchtype
@@ -73,9 +73,8 @@ func (this *ArticleController) List() {
 	this.Data["count_2"], _ = post.Query().Filter("status", 2).Count()
 	this.Data["status"] = status
 	this.Data["list"] = list
-	this.Data["pagebar"] = models.NewPager(page, count, pageSize, fmt.Sprintf("/admin/article/list?status=%d&searchtype=%s&keyword=%s&page=%s", status, searchtype, keyword, "%d")).ToString()
+	this.Data["pagebar"] = models.NewPager(page, count, pagesize, fmt.Sprintf("/admin/article/list?status=%d&searchtype=%s&keyword=%s&page=%s", status, searchtype, keyword, "%d")).ToString()
 	this.display()
-
 }
 
 func (this *ArticleController) Add() {
@@ -171,9 +170,8 @@ func (this *ArticleController) Save() {
 		} else {
 			post.Posttime, _ = time.Parse("2006-01-02 15:04:05", post.Posttime.Format("2006-01-02 15:04:05"))
 		}
-
+		post.User = &models.User{Id: this.userid}
 		post.Updated = this.getTime()
-		post.User_id = this.userid
 		post.Insert()
 		models.Cache.Delete("latestblog")
 	} else {

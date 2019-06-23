@@ -16,7 +16,12 @@ type Mood struct {
 }
 
 func init() {
-	orm.RegisterModelWithPrefix("tb_", &Mood{})
+	orm.RegisterModel(&Mood{})
+}
+
+//返回带前缀的表名
+func (m *Mood) TableName() string {
+	return TableName("tb_mood")
 }
 
 func (m *Mood) Insert() error {

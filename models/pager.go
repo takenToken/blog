@@ -7,18 +7,23 @@ import (
 )
 
 type Pager struct {
-	Page     int64
-	Totalnum int64
-	Pagesize int64
-	urlpath  string
+	Page      int64
+	Totalnum  int64
+	Totalpage int64
+	Pagesize  int64
+	urlpath   string
+	postId    int64
 }
 
-func NewPager(page, totalnum, pagesize int64, urlpath string) *Pager {
+func NewPager(page, totalnum, pagesize int64, urlpath string, args ...int64) *Pager {
 	p := new(Pager)
 	p.Page = page
 	p.Totalnum = totalnum
 	p.Pagesize = pagesize
 	p.urlpath = urlpath
+	if len(args) > 0 {
+		p.postId = args[0]
+	}
 	return p
 }
 

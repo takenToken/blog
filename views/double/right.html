@@ -1,54 +1,60 @@
-<div class="right-bar col-lg-3 col-md-3 hidden-sm hidden-xs column">
-    {{/*<div class="weather">*/}}
-        {{/*<iframe scrolling="no" src="//tianqiapi.com/api.php?style=td&skin=pitaya" frameborder="0" width="300" height="30" allowtransparency="true"></iframe>*/}}
-    {{/*</div>*/}}
-    <div class="news">
-        <h3 class="wz"><p>最新<span>文章</span></p></h3>
-        <ul class="rank">
-        {{range $k,$v := .latestblog}}
-            <li><a href="{{$v.Link}}" title="{{$v.Title}}">{{str2html $v.ColorTitle}}</a></li>
-        {{end}}
-        </ul>
-        <h3 class="ph"><p>点击<span>排行</span></p></h3>
-        <ul class="paih">
-        {{range $k,$v := .hotblog}}
-            <li><a href="{{$v.Link}}" title="{{$v.Title}}">{{str2html $v.ColorTitle}}</a></li>
-        {{end}}
-        </ul>
-        <h3 class="npk"><p>最新<span>评论</span></p></h3>
-        <ul class="newcomment">
-        {{range $k,$v := .newcomments}}
-            <li>
-                <a class="pull-left">
-                    <img class="media-object" src="{{ $v.User.Avator }}" height="36" width="36" alt="">
-                </a>
-                <div class="media-body">
-                    <h6 class="media-heading">{{$v.User.Nickname}}{{ if eq $v.User.Id 1 }}
-                        <button class="btn btn-info btn-xs">官方</button>{{end}}
-                        <span>{{$v.ShowSubTime}}</span>
-                    </h6>
-                {{if eq $v.Obj_pk_type 1}}
-                    <a href="/links.html#comment-{{$v.Id}}" title="{{$v.Titleln}}">{{$v.Return_limit $v.Comment}}</a>
-                {{else}}
-                    <a href="{{$v.Obj_pk.Link}}#comment-{{$v.Id}}" title="{{$v.Titleln}}">{{$v.Return_limit $v.Comment}}</a>
-                {{end}}
-                </div>
-            </li>
-        {{end}}
-        </ul>
-        <h3 class="links">
-            <p>友情<span>链接</span></p>
-        </h3>
-        <div class="link-friends">
-        {{range $k,$v := .links}}
-            <span>
-                <a rel="link" href="{{$v.Url}}" title="{{$v.Sitename}}" target="_blank">
-                <img alt='' src='{{$v.Siteavator}}' class='wyavater' height='40' width='40' title="{{$v.Sitedesc}}" />
-                <span class="sitename">{{$v.Sitename}}</span>
-                </a>
-		    </span>
-        {{end}}
+<div class="col-lg-3 col-md-3 hidden-sm hidden-xs column">
+    <div class=" col-lg-12 col-md-12 hidden-sm hidden-xs column" style="background-color:#fff;margin-bottom: 20px;">
+        <div class="">
+            <div class="htitle">
+                <h4>最近更新</h4>
+            </div>
+            <div class="notice">
+                <ul style="padding-inline-start: 0">
+                    {{range $k,$v := .lastPosts}}
+                        <li><a target="_blank" href="/article/{{$v.id}}" title="{{$v.text}}">{{$v.text}}</a></li>
+                    {{end}}
+                </ul>
+            </div>
         </div>
-        <a class="weixin"></a>
+    </div>
+
+    <div class=" col-lg-12 col-md-12 hidden-sm hidden-xs column" style="background-color:#fff;margin-bottom: 20px;">
+        <div class="htitle">
+            <h4>点击排行</h4>
+        </div>
+        <div class="paihang">
+            <ul style="padding-inline-start: 0">
+                {{range $k,$v := .lastPostRankings}}
+                <li><i></i><a href="/article/{{$v.id}}" title="{{$v.text}}"
+                              target="_blank">{{$v.text}}</a>
+                {{end}}
+            </ul>
+        </div>
+    </div>
+
+    <div class=" col-lg-12 col-md-12 hidden-sm hidden-xs column" style="background-color:#fff;margin-bottom: 20px;">
+        <div class="">
+            <div class="htitle">
+                <h4>最新评论</h4>
+            </div>
+            <div class="notice">
+                <ul style="padding-inline-start: 0">
+                    {{range $k,$v := .lastComments}}
+
+                    {{end}}
+                    <li>赞</li>
+                    <li>赞二</li>
+                    <li>赞三</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class=" col-lg-12 col-md-12 hidden-sm hidden-xs column" style="background-color:#fff ">
+        <div class="htitle">
+            <h4>我的名片</h4>
+        </div>
+        <div>
+            <p>网名：Pack </p>
+            <p>职业：专注Java/Go软件工程师 </p>
+            <p>现居：广东省-深圳</p>
+            <p>Email：qiangliujk@foxmail.com</p>
+        </div>
     </div>
 </div>

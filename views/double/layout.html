@@ -18,11 +18,11 @@
     {{str2html .hidejs}}
 </head>
 <body>
-    <div class="container-fluid" style="padding: 70px 0 0 0;">
+    <div class="container-fluid" style="padding: 70px 70px 0 70px;background: #E9EAED">
         {{.head}}
-        {{.banner}}
+{{/*        {{.banner}}*/}}
         <div class="col-lg-2 col-md-2 hidden-sm hidden-xs column"></div>
-        <article class="col-lg-8 col-md-8 col-sm-12 col-xs-12 column">
+        <article class="col-lg-12 col-md-12 col-sm-12 col-xs-12 column">
             {{.LayoutContent}}
             {{.right}}
         </article>

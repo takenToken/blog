@@ -17,7 +17,7 @@ type Photo struct {
 }
 
 func init() {
-	orm.RegisterModelWithPrefix("tb_", &Photo{})
+	orm.RegisterModel(&Photo{})
 }
 
 func (m *Photo) Insert() error {

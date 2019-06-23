@@ -15,7 +15,11 @@ type TagPost struct {
 }
 
 func init() {
-	orm.RegisterModelWithPrefix("tb_", &TagPost{})
+	orm.RegisterModel(&TagPost{})
+}
+
+func (m *TagPost) TableName() string {
+	return TableName("tb_tag_post")
 }
 
 func (m *TagPost) Insert() error {

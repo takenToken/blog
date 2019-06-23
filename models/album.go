@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/astaxie/beego/orm"
-	"github.com/pkg/errors"
 	"time"
 )
 
@@ -18,7 +17,11 @@ type Album struct {
 }
 
 func init() {
-	orm.RegisterModelWithPrefix("tb_", &Album{})
+	orm.RegisterModel(&Album{})
+}
+
+func (m *Album) TableName() string {
+	return TableName("tb_album")
 }
 
 func (m *Album) Insert() error {
@@ -59,6 +62,5 @@ func (m *Album) LongNameAlter() string {
 	if length > 15 {
 		return string(data[:6]) + "..." + string(data[length-7:length])
 	}
-	errors.New("xxxxx")
 	return m.Name
 }

@@ -30,7 +30,11 @@ type User struct {
 
 func init() {
 	// register model
-	orm.RegisterModelWithPrefix("tb_", new(User))
+	orm.RegisterModel(new(User))
+}
+
+func (m *User) TableName() string {
+	return TableName("tb_user")
 }
 
 //新增

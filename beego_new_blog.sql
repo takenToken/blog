@@ -64,7 +64,7 @@ create index idx_tb_link_sitename on tb_album(sitename);
 
 
 /**
-*  tb_link       链接
+*  tb_link       心情
 */
 -- drop table if exists tb_mood;
 create table tb_mood
@@ -80,14 +80,14 @@ create index idx_tb_mood_posttime on tb_album(posttime);
 
 
 /**
-*  tb_link       链接
+*  tb_link       配置
 */
 -- drop table if exists tb_option;
 create table tb_option
 (
   id                        bigint(20)      AUTO_INCREMENT      not null        comment '自动增长id',
-  name                      varchar(255)    DEFAULT ''          not null        comment '',
-  value                     longtext                            not null        comment '',
+  name                      varchar(255)    DEFAULT ''          not null        comment '链接名',
+  value                     longtext                            not null        comment '链接值',
   primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 comment='链接';
 create index idx_tb_option_name on tb_album(name);
@@ -201,12 +201,12 @@ CREATE TABLE `tb_tag_post`
 CREATE TABLE `tb_user`
 (
     `id`         bigint(20)   NOT NULL AUTO_INCREMENT,
-    `username`   varchar(15)  NOT NULL DEFAULT '',
+    `username`   varchar(15)  NOT NULL DEFAULT '账号',
     `password`   varchar(32)  NOT NULL DEFAULT '密码',
-    `nickname`   varchar(15)  NOT NULL DEFAULT '',
-    `email`      varchar(50)  NOT NULL DEFAULT '',
+    `nickname`   varchar(15)  NOT NULL DEFAULT '昵称',
+    `email`      varchar(50)  NOT NULL DEFAULT '邮箱',
     `salt`       varchar(20)  NOT NULL DEFAULT '密码盐',
-    `lastlogin`  datetime     NOT NULL,
+    `lastlogin`  datetime     NOT NULL,         '最后登录时间'
     `logincount` bigint(20)   NOT NULL DEFAULT '0',
     `lastip`     varchar(32)  NOT NULL DEFAULT '',
     `authkey`    varchar(10)  NOT NULL DEFAULT '',
