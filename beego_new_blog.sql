@@ -12,7 +12,7 @@ create table tb_album
   cover                	    varchar(70)     default ''      not null        comment '转换',
   posttime                  datetime                        not null        comment '提交日期',
   ishide                    tinyint(4)      default '0'     not null        comment '是否隐藏',
-  rank                      tinyint(4)      default '0'     not null        comment '排名',
+  ranking                   tinyint(4)      default '0'     not null        comment '排名',
   photonum                  varchar(20)     default '0'     not null        comment '照片数量',
   primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 comment='专辑';
@@ -56,7 +56,7 @@ create table tb_link
   siteavator                varchar(200)    default '/static/upload/default/user-default-60x60.png'       not null        comment '',
   url                       varchar(200)    default ''          not null        comment '',
   sitedesc                  varchar(300)    default ''          not null        comment '',
-  rank                      tinyint(4)      default '0'         not null        comment '',
+  ranking                   tinyint(4)      default '0'         not null        comment '',
   primary key(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 comment='链接';
 create index idx_tb_link_sitename on tb_link(sitename);
@@ -64,7 +64,7 @@ create index idx_tb_link_sitename on tb_link(sitename);
 
 
 /**
-*  tb_link       心情
+*  tb_mood       心情
 */
 -- drop table if exists tb_mood;
 create table tb_mood
@@ -80,7 +80,7 @@ create index idx_tb_mood_posttime on tb_mood(posttime);
 
 
 /**
-*  tb_link       配置
+*  tb_option       配置
 */
 -- drop table if exists tb_option;
 create table tb_option
@@ -161,7 +161,7 @@ create index idx_tb_tag_name on tb_tag(name);
 
 
 /**
-*  tb_photo       标签文章管理
+*  tb_tag_post       标签文章管理
 */
 -- drop table if exists tb_tag_post;
 create table tb_tag_post
@@ -203,9 +203,7 @@ create index idx_tb_user_email on tb_user(email);
 
 INSERT INTO tb_link
 VALUES (1, '爱在发烧', '/static/upload/smallpic/20180619/1529369471932023700.jpg', 'http://azfashao.com/',
-        '一个非常棒的站点，博主也很厉害', 99),
-       (2, 'AN STUDIO', '/static/upload/smallpic/20180621/1529576340049076300.jpg', '//shop59002320.taobao.com',
-        '外设韩国原单店铺', 100);
+        '一个非常棒的站点，博主也很厉害', 99);
 
 
 INSERT INTO tb_option
@@ -213,7 +211,7 @@ VALUES (1, 'sitename', 'pack'),
        (2, 'siteurl', 'https://qlblog.cn'),
        (3, 'subtitle', '创造价值,更好生活'),
        (4, 'pagesize', '15'),
-       (5, 'keywords', 'Java,MySQL,Golang,Redis,Kafka,Zookeeper,JVM,Windows,Linux'),
+       (5, 'keywords', 'Java,MySQL,Golang,Redis,Kafka,Zookeeper,JVM,Docker,K8s,Windows,Linux'),
        (6, 'description', '学无止境'),
        (7, 'theme', 'double'),
        (8, 'timezone', '8'),
@@ -225,7 +223,7 @@ VALUES (1, 'sitename', 'pack'),
        (15, 'myoldcity', '广东省 深圳市'),
        (16, 'mycity', '广东省 深圳市'),
        (17, 'myprifessional', 'Java/Go工程师'),
-       (18, 'myworkdesc', '1、构建企业级微服务平台。
+       (18, 'myworkdesc', '1、构建企业级微服务平台,熟悉Docker。
 2、负责架构系统调优,线上问题跟进。
 3、负责公司供应链业务功能开发。
 4、希望云平台Golang、零售方向前进'),
