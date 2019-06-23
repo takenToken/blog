@@ -72,7 +72,7 @@ func (this *baseController) auth() {
 			var user models.User
 			var permission models.Permission
 			user.Id = userid
-			if user.Read() == nil && password == models.Md5([]byte(this.getClientIp()+"|"+user.Password)) {
+			if user.Read() == nil && password == models.Md5([]byte("|"+user.Password)) {
 				this.userid = user.Id
 				this.username = user.Username
 				for _, id := range strings.Split(user.Permission, "|") {

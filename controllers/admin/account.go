@@ -4,6 +4,8 @@ import (
 	"blog/models"
 	"fmt"
 	"github.com/astaxie/beego/validation"
+	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -28,7 +30,7 @@ func (this *AccountController) Login() {
 				this.TplName = "admin/account_login.html"
 				return
 			}
-			fmt.Println(models.Md5([]byte("123456=abtfg")))
+
 			if user.Password != models.Md5([]byte(password+"="+user.Salt)) {
 				this.Data["errmsg"] = "帐号或密码错误"
 			} else if user.Active == 0 {
@@ -38,11 +40,11 @@ func (this *AccountController) Login() {
 				user.Lastlogin = this.getTime()
 				user.Update()
 
-				authkey := models.Md5([]byte(this.getClientIp() + "|" + user.Password))
+				authKey := models.Md5([]byte("|" + user.Password))
 				if remember == "yes" {
-					this.Ctx.SetCookie("auth", strconv.FormatInt(user.Id, 10)+"|"+authkey, 7*86400)
+					this.Ctx.SetCookie("auth", strconv.FormatInt(user.Id, 10)+"|"+authKey, 7*86400)
 				} else {
-					this.Ctx.SetCookie("auth", strconv.FormatInt(user.Id, 10)+"|"+authkey)
+					this.Ctx.SetCookie("auth", strconv.FormatInt(user.Id, 10)+"|"+authKey)
 				}
 				this.Redirect(this.Ctx.Request.Referer(), 302)
 			}
@@ -110,7 +112,79 @@ func (this *AccountController) Profile() {
 	if err := user.Read(); err != nil {
 		this.showmsg(err.Error())
 	}
-
+	lastavator := user.Avator
+	if this.Ctx.Request.Method == "POST" {
+		errmsg := make(map[string]string)
+		password := strings.TrimSpace(this.GetString("password"))
+		newpassword := strings.TrimSpace(this.GetString("newpassword"))
+		newpassword2 := strings.TrimSpace(this.GetString("newpassword2"))
+		avator := strings.TrimSpace(this.GetString("avator"))
+		nickname := strings.TrimSpace(this.GetString("nickname"))
+		if avator == "" {
+			avator = "/static/upload/default/user-default-60x60.png"
+		}
+		if avator != lastavator {
+			models.Cache.Delete("newcomments")
+			if user.Upcount > 0 {
+				user.Upcount--
+			}
+			if !this.Isdefaultsrc(lastavator) {
+				os.Remove("." + lastavator)
+			}
+		}
+		updated := false
+		valid := validation.Validation{}
+		if v := valid.Required(nickname, "nickname"); !v.Ok {
+			errmsg["nickname"] = "请输入昵称"
+		} else if v := valid.MaxSize(nickname, 15, "nickname"); !v.Ok {
+			errmsg["nickname"] = "昵称长度不能大于15个字符"
+		}
+		var user1 models.User
+		err := user1.Query().Filter("nickname", nickname).One(&user1)
+		if err == nil && user1.Id != user.Id {
+			errmsg["nickname"] = fmt.Sprintf("昵称:%s 已被使用", nickname)
+		}
+		if nickname != user.Nickname && len(errmsg) == 0 {
+			user.Nickname = nickname
+			user.Update("nickname")
+			updated = true
+		}
+		if avator != user.Avator && len(errmsg) == 0 {
+			user.Avator = avator
+			user.Update("avator", "upcount")
+			updated = true
+		}
+		if newpassword != "" {
+			if password == "" || models.Md5([]byte(password+"="+user.Salt)) != user.Password {
+				errmsg["password"] = "当前密码错误"
+			} else if len(newpassword) < 6 {
+				errmsg["newpassword"] = "密码长度不能少于6个字符"
+			} else if newpassword != newpassword2 {
+				errmsg["newpassword2"] = "两次输入的密码不一致"
+			}
+			if len(errmsg) == 0 {
+				user.Password = models.Md5([]byte(newpassword + "=" + user.Salt))
+				user.Update("password")
+				updated = true
+			}
+		}
+		this.Data["updated"] = updated
+		this.Data["errmsg"] = errmsg
+	}
 	this.Data["user"] = user
 	this.display()
+}
+
+func checkUsername(username string) (b bool) {
+	if ok, _ := regexp.MatchString("^[a-zA-Z]([a-zA-Z0-9-_]{4,14})+$", username); !ok {
+		return false
+	}
+	return true
+}
+
+func checkPassword(password string) (b bool) {
+	if ok, _ := regexp.MatchString("^[a-zA-Z0-9[:punct:]]{4,19}$", password); !ok {
+		return false
+	}
+	return true
 }

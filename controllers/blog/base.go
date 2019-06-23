@@ -127,7 +127,7 @@ func (this *baseController) IsLogin() bool {
 		if userid > 0 {
 			var user models.User
 			user.Id = userid
-			if user.Read() == nil && password == models.Md5([]byte(this.getClientIp()+"|"+user.Password)) {
+			if user.Read() == nil && password == models.Md5([]byte("|"+user.Password)) {
 				return true
 			}
 		}
