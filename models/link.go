@@ -11,14 +11,14 @@ type Link struct {
 	Siteavator string `orm:"size(200);default(/static/upload/default/user-default-60x60.png)"`
 	Url        string `orm:"size(200);index"`
 	Sitedesc   string `orm:"size(300)"`
-	Rank       int8   `orm:"index"`
+	Ranking    int8   `orm:"index"`
 }
 
 func init() {
 	orm.RegisterModel(&Link{})
 }
 
-func(m *Link) TableName() string{
+func (m *Link) TableName() string {
 	return TableName("tb_link")
 }
 

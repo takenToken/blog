@@ -12,7 +12,7 @@ type Album struct {
 	Cover    string    `orm:"size(70)"`
 	Posttime time.Time `orm:"type(datetime);index"`
 	Ishide   int8      `orm:"index"`
-	Rank     int8      `orm:"index"`
+	Ranking  int8      `orm:"index"`
 	Photonum int64     `orm:"index"`
 }
 

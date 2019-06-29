@@ -2,6 +2,7 @@ package blog
 
 import (
 	"blog/models"
+	"github.com/astaxie/beego/logs"
 	"strconv"
 	"strings"
 )
@@ -16,7 +17,10 @@ func (this *MainController) Index() {
 	query := new(models.Post).Query().Filter("status", 0).Filter("urltype", 0)
 	count, _ := query.Count()
 	if count > 0 {
-		query.OrderBy("-istop", "-posttime").Limit(this.pagesize, (this.page-1)*this.pagesize).RelatedSel().All(&list)
+		_, err := query.OrderBy("-istop", "-posttime").Limit(this.pagesize, (this.page-1)*this.pagesize).RelatedSel().All(&list)
+		if err != nil {
+			logs.Error(err)
+		}
 	}
 	this.Data["list"] = list
 	this.Data["pagebar"] = models.NewPager(int64(this.page), int64(count), int64(this.pagesize), "/index%d.html").ToString()
@@ -31,7 +35,10 @@ func (this *MainController) BlogList() {
 	query := new(models.Post).Query().Filter("status", 0).Filter("urltype", 0)
 	count, _ := query.Count()
 	if count > 0 {
-		query.OrderBy("-istop", "-posttime").Limit(this.pagesize, (this.page-1)*this.pagesize).RelatedSel().All(&list)
+		_, err := query.OrderBy("-istop", "-posttime").Limit(this.pagesize, (this.page-1)*this.pagesize).RelatedSel().All(&list)
+		if err != nil {
+			logs.Error(err)
+		}
 	}
 	this.Data["list"] = list
 	this.Data["pagebar"] = models.NewPager(int64(this.page), int64(count), int64(this.pagesize), "/life%d.html").ToString()
@@ -58,7 +65,10 @@ func (this *MainController) Mood() {
 	query := new(models.Mood).Query()
 	count, _ := query.Count()
 	if count > 0 {
-		query.OrderBy("-posttime").Limit(this.pagesize, (this.page-1)*this.pagesize).All(&list)
+		_, err := query.OrderBy("-posttime").Limit(this.pagesize, (this.page-1)*this.pagesize).All(&list)
+		if err != nil {
+			logs.Error(err)
+		}
 	}
 	this.Data["list"] = list
 	this.setHeadMetas("碎言碎语")
@@ -90,7 +100,10 @@ func (this *MainController) Photo() {
 	offset := (page - 1) * pagesize
 	count, _ := photo.Query().Filter("albumid", albumid).Count()
 	if count > 0 {
-		photo.Query().Filter("albumid", albumid).OrderBy("-posttime").Limit(pagesize, offset).All(&list)
+		_, err := photo.Query().Filter("albumid", albumid).OrderBy("-posttime").Limit(pagesize, offset).All(&list)
+		if err != nil {
+			logs.Error(err)
+		}
 	}
 	this.right = ""
 	this.Data["list"] = list
@@ -108,7 +121,10 @@ func (this *MainController) Album() {
 	query := new(models.Album).Query().Filter("ishide", 0)
 	count, _ := query.Count()
 	if count > 0 {
-		query.OrderBy("-rank", "-posttime").Limit(pagesize, (this.page-1)*pagesize).All(&list)
+		_, err := query.OrderBy("-ranking", "-posttime").Limit(pagesize, (this.page-1)*pagesize).All(&list)
+		if err != nil {
+			logs.Error(err)
+		}
 	}
 	this.setHeadMetas("光影瞬间")
 	this.right = ""
@@ -155,8 +171,8 @@ func (this *MainController) Show() {
 	var commentlength int64
 	var commentuser int64
 	type CommentlistMap struct {
-		Commentlist0    *models.Comments
-		Commentlist     []*models.Comments
+		Commentlist0 *models.Comments
+		Commentlist  []*models.Comments
 	}
 	var commentlistmap []CommentlistMap
 	count, _ := comment.Query().Filter("obj_pk", post.Id).Filter("reply_pk", 0).Filter("is_removed", 0).Count()
@@ -239,7 +255,7 @@ func (this *MainController) Links() {
 	comment.Query().Filter("obj_pk_type", 1).Filter("reply_pk", 0).Filter("is_removed", 0).OrderBy("-submittime").Limit(this.pagesize, (this.page-1)*this.pagesize).RelatedSel("user").All(&commentlist0)
 	for _, v := range commentlist0 {
 		comment.Query().Filter("reply_fk", v.Id).Filter("is_removed", 0).OrderBy("submittime").RelatedSel("user").All(&commentlist)
-		var item= CommentlistMap{}
+		var item = CommentlistMap{}
 		item.Commentlist0 = v
 		item.Commentlist = commentlist
 		commentlistmap = append(commentlistmap, item)
@@ -259,4 +275,3 @@ func (this *MainController) Links() {
 	this.setHeadMetas("友情链接")
 	this.display("links")
 }
-

@@ -39,3 +39,6 @@ release.properties
 .factorypath
 
 rebel.xml
+
+# 忽略go的下载记录
+go.sum

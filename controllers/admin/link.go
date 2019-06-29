@@ -14,7 +14,7 @@ type LinkController struct {
 func (this *LinkController) List() {
 	var list []*models.Link
 	var link models.Link
-	link.Query().OrderBy("-rank").All(&list)
+	link.Query().OrderBy("-ranking").All(&list)
 	this.Data["list"] = list
 	this.display()
 }
@@ -34,7 +34,7 @@ func (this *LinkController) Add() {
 		if err == -1 && err2 == -1 && err3 == -1 {
 			url = "//" + url
 		}
-		rank, _ := this.GetInt64("rank")
+		rank, _ := this.GetInt64("ranking")
 		siteavator := "/static/upload/default/user-default-60x60.png"
 		if avator_input := strings.TrimSpace(this.GetString("cover")); avator_input != "" {
 			siteavator = avator_input
@@ -42,7 +42,7 @@ func (this *LinkController) Add() {
 		sitedesc := strings.TrimSpace(this.GetString("sitedesc"))
 		link.Sitename = sitename
 		link.Url = url
-		link.Rank = int8(rank)
+		link.Ranking = int8(rank)
 		link.Siteavator = siteavator
 		link.Sitedesc = sitedesc
 		if err := link.Insert(); err != nil {
@@ -65,7 +65,7 @@ func (this *LinkController) Edit() {
 	if this.Ctx.Request.Method == "POST" {
 		sitename := strings.TrimSpace(this.GetString("sitename"))
 		url := strings.TrimSpace(this.GetString("url"))
-		rank, _ := this.GetInt64("rank")
+		rank, _ := this.GetInt64("ranking")
 		siteavator := strings.TrimSpace(this.GetString("cover"))
 		if siteavator != lastavator && !this.Isdefaultsrc(lastavator) {
 			os.Remove("."+lastavator)
@@ -73,7 +73,7 @@ func (this *LinkController) Edit() {
 		sitedesc := strings.TrimSpace(this.GetString("sitedesc"))
 		link.Sitename = sitename
 		link.Url = url
-		link.Rank = int8(rank)
+		link.Ranking = int8(rank)
 		link.Siteavator = siteavator
 		link.Sitedesc = sitedesc
 		link.Update()

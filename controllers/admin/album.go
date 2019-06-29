@@ -28,7 +28,7 @@ func (this *AlbumController) List() {
 	query := album.Query()
 	count, _ := query.Count()
 	if count > 0 {
-		query.OrderBy("-rank", "-posttime").Limit(pagesize, offset).All(&list)
+		query.OrderBy("-ranking", "-posttime").Limit(pagesize, offset).All(&list)
 	}
 
 	this.Data["list"] = list
@@ -39,14 +39,14 @@ func (this *AlbumController) List() {
 //创建相册
 func (this *AlbumController) Add() {
 	if this.Ctx.Request.Method == "POST" {
-		rank, _ := this.GetInt("rank")
+		rank, _ := this.GetInt("ranking")
 		var album models.Album
 		album.Name = strings.TrimSpace(this.GetString("albumname"))
 		album.Cover = strings.TrimSpace(this.GetString("cover"))
 		if album.Cover == "" {
 			album.Cover = fmt.Sprintf("/static/upload/default/blog-default-%d.png", rand.Intn(9))
 		}
-		album.Rank = int8(rank)
+		album.Ranking = int8(rank)
 		album.Posttime, _ = time.Parse("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"))
 		if err := album.Insert(); err != nil {
 			this.showmsg(err.Error())
@@ -78,13 +78,13 @@ func (this *AlbumController) Edit() {
 		this.Abort("404")
 	}
 	if this.Ctx.Request.Method == "POST" {
-		rank, _ := this.GetInt("rank")
+		rank, _ := this.GetInt("ranking")
 		album.Cover = this.GetString("cover")
 		if album.Cover == "" {
 			album.Cover = fmt.Sprintf("/static/upload/default/blog-default-%d.png", rand.Intn(9))
 		}
 		album.Name = this.GetString("albumname")
-		album.Rank = int8(rank)
+		album.Ranking = int8(rank)
 		album.Update()
 		this.Redirect("/admin/album/list", 302)
 	}
