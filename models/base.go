@@ -14,16 +14,24 @@ import (
 	"time"
 )
 
-func GetOptionValue(key string) string {
+//read option to cache
+func GetOptionValue(key string) (string, error) {
 	if !Cache.IsExist(key) {
 		var option Option
 		o := orm.NewOrm()
-		o.QueryTable(&Option{}).One(option, key)
-		Cache.Put(option.Name, option.Value, 1000*time.Hour)
-		return option.Value
-	} else {
-		return Cache.Get(key).(string)
+		err := o.QueryTable(&Option{}).One(option, key)
+		if err != nil {
+			return "", err
+		}
+
+		err = Cache.Put(option.Name, option.Value, 1000*time.Hour)
+		if err != nil {
+			return "", err
+		}
+
+		return option.Value, nil
 	}
+	return Cache.Get(key).(string), nil
 }
 
 //md5码
@@ -33,7 +41,8 @@ func Md5(buf []byte) string {
 	return fmt.Sprintf("%x", hash.Sum(nil))
 }
 
-func Rawurlencode(str string) string {
+//
+func RawUrlEncode(str string) string {
 	return strings.Replace(url.QueryEscape(str), "+", "%20", -1)
 }
 
@@ -87,7 +96,7 @@ func Copy(src interface{}, dst interface{}) error {
 	return nil
 }
 
-func GetOptions() map[string]string {
+func GetOptions() (map[string]string) {
 	key := "options"
 	if !Cache.IsExist(key) {
 		var options []*Option
@@ -105,20 +114,29 @@ func GetOptions() map[string]string {
 		optionStr, err := json.Marshal(&optionMap)
 		if err != nil {
 			logs.Error(err)
+			return make(map[string]string, 0)
 		}
 
-		Cache.Put(key, optionStr, 1000*time.Hour)
-		return optionMap
-	} else {
-		var opMap map[string]string
-		//类型
-		opByte := Cache.Get(key).([]byte)
-		if opByte != nil {
-			//反序列化
-			json.Unmarshal(opByte, &opMap)
+		err = Cache.Put(key, optionStr, 1000*time.Hour)
+		if err != nil {
+			logs.Error(err)
+			return make(map[string]string, 0)
 		}
-		return opMap
+		return optionMap
 	}
+
+	var opMap map[string]string
+	//类型
+	opByte := Cache.Get(key).([]byte)
+	if opByte != nil {
+		//反序列化
+		err := json.Unmarshal(opByte, &opMap)
+		if err != nil {
+			logs.Error(err)
+			return make(map[string]string, 0)
+		}
+	}
+	return opMap
 
 }
 
@@ -126,7 +144,12 @@ func GetOptions() map[string]string {
 func GetLastPosts() []*map[string]string {
 	post := &Post{}
 	var posts []*Post
-	post.Query().Limit(4).OrderBy("-posttime").All(&posts)
+	_, err := post.Query().Limit(4).OrderBy("-posttime").All(&posts)
+	if err != nil {
+		logs.Error(err)
+		//err create null
+		return make([]*map[string]string, 0)
+	}
 
 	ps := make([]*map[string]string, len(posts))
 	for index, v := range posts {
@@ -143,7 +166,11 @@ func GetLastPosts() []*map[string]string {
 func GetLastPostRankings() []*map[string]string {
 	post := &Post{}
 	var posts []*Post
-	post.Query().Limit(7).OrderBy("-views").All(&posts)
+	_, err := post.Query().Limit(7).OrderBy("-views").All(&posts)
+	if err != nil {
+		logs.Error(err)
+		return make([]*map[string]string, 0)
+	}
 
 	ps := make([]*map[string]string, len(posts))
 	for index, v := range posts {
@@ -160,7 +187,11 @@ func GetLastPostRankings() []*map[string]string {
 func GetLastComments() []*Comments {
 	comments := &Comments{}
 	var commentsList []*Comments
-	comments.Query().Limit(7).Filter("is_removed", 0).OrderBy("-submittime").RelatedSel("user").All(&commentsList)
+	_, err := comments.Query().Limit(7).Filter("is_removed", 0).OrderBy("-submittime").RelatedSel("user").All(&commentsList)
+	if err != nil {
+		logs.Error(err)
+		return nil
+	}
 
 	return commentsList
 }

@@ -86,9 +86,9 @@ func (this *Post) ColorTitle() string {
 func (this *Post) Link() string {
 	if this.Urlname != "" {
 		if this.Urltype == 1 {
-			return fmt.Sprintf("/%s", Rawurlencode(this.Urlname))
+			return fmt.Sprintf("/%s", RawUrlEncode(this.Urlname))
 		}
-		return fmt.Sprintf("/article/%s", Rawurlencode(this.Urlname))
+		return fmt.Sprintf("/article/%s", RawUrlEncode(this.Urlname))
 	}
 	return fmt.Sprintf("/article/%d", this.Id)
 }

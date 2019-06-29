@@ -30,6 +30,7 @@ func (this *baseController) Prepare() {
 	}
 
 	this.Data["IsLogin"] = this.IsLogin()
+	this.Data["IsAdmin"] = this.IsAdmin()
 	this.options = models.GetOptions()
 	this.right = "right.html"
 	this.Data["options"] = this.options
@@ -135,6 +136,22 @@ func (this *baseController) IsLogin() bool {
 	return false
 }
 
+func (this *baseController) IsAdmin() bool {
+	arr := strings.Split(this.Ctx.GetCookie("auth"), "|")
+	if len(arr) == 2 {
+		idstr, password := arr[0], arr[1]
+		userid, _ := strconv.ParseInt(idstr, 10, 0)
+		if userid > 0 {
+			var user models.User
+			user.Id = userid
+			if user.Read() == nil && password == models.Md5([]byte("|"+user.Password)) && user.Id == 1 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 //获取用户IP地址
 func (this *baseController) getClientIp() string {
 	s := this.Ctx.Request.Header.Get("X-Real-IP")
@@ -143,4 +160,3 @@ func (this *baseController) getClientIp() string {
 	}
 	return s
 }
-
